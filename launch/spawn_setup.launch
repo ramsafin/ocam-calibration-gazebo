@@ -30,10 +30,8 @@
               -unpause -urdf -param $(arg robot_namespace)/chessboard_description -model chessboard"/>
     </group>
 
-
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-
-    <node name="rviz_view" pkg="rviz" type="rviz" output="screen"/>
+    <!--    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />-->
+    <!--    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />-->
+    <!--    <node name="rviz_view" pkg="rviz" type="rviz" output="screen"/>-->
 
 </launch>
