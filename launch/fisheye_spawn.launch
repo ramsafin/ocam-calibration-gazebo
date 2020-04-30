@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="world_name" default="worlds/empty.world"/>
+
+    <!-- spawn args -->
+    <arg name="robot_namespace" default="/"/>
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+
+    <!-- Gazebo world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="verbose" value="true"/>
+        <arg name="paused" value="true"/>
+    </include>
+
+    <param name="fisheye_description" command="$(find xacro)/xacro '$(find ocam-calibration)/urdf/fisheye.urdf.xacro'
+    --inorder robot_namespace:=$(arg robot_namespace)"/>
+
+    <!-- Spawn model -->
+    <group ns="$(arg robot_namespace)">
+        <node name="spawn_fisheye_box_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+              args="-x $(arg x) -y $(arg y) -z $(arg z)
+              -unpause -urdf -param fisheye_description -model fisheye_box"/>
+    </group>
+
+</launch>
