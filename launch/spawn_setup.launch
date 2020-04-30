@@ -1,12 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="world_name" default="worlds/empty.world"/>
+    <arg name="world_name" default="$(find ocam-calibration)/worlds/default.world"/>
 
     <!-- spawn args -->
     <arg name="robot_namespace" default="/"/>
-    <arg name="x" default="0.0"/>
-    <arg name="y" default="0.0"/>
-    <arg name="z" default="0.0"/>
 
     <!-- Gazebo world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -18,12 +15,25 @@
     <!-- Spawn model -->
     <group ns="$(arg robot_namespace)">
 
-        <param name="calib_setup_description" command="$(find xacro)/xacro
+        <param name="robot_description" command="$(find xacro)/xacro
         '$(find ocam-calibration)/urdf/setup.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
 
         <node name="spawn_calib_setup_model" pkg="gazebo_ros" type="spawn_model" output="screen"
-              args="-x $(arg x) -y $(arg y) -z $(arg z)
-              -unpause -urdf -param $(arg robot_namespace)/calib_setup_description -model calib_setup"/>
+              args="-x 0 -y 0 -z 0.25
+              -unpause -urdf -param $(arg robot_namespace)/robot_description -model calib_setup"/>
+
+        <param name="chessboard_description" command="$(find xacro)/xacro
+        '$(find ocam-calibration)/urdf/chessboard.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
+
+        <node name="chessboard_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+              args="-x 0.25 -y 0 -z 0.3 -Y 3.1415
+              -unpause -urdf -param $(arg robot_namespace)/chessboard_description -model chessboard"/>
     </group>
+
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+    <node name="rviz_view" pkg="rviz" type="rviz" output="screen"/>
 
 </launch>

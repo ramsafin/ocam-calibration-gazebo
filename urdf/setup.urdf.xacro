@@ -7,14 +7,6 @@
     <xacro:property name="clip_near" value="0.1"/>
     <xacro:property name="clip_far" value="100"/>
 
-    <link name="world"/>
-
-    <joint name="box_mount" type="fixed">
-        <origin xyz="0 0 0.25"/>
-        <parent link="world"/>
-        <child link="box"/>
-    </joint>
-
     <link name="box">
         <inertial>
             <mass value="0.001"/>
@@ -36,13 +28,14 @@
 
     <!-- Camera -->
     <joint name="fisheye_mount" type="fixed">
-        <origin xyz="0.05 0 0.2" rpy="0 0 ${pi}"/>
+        <origin xyz="0.05 0 0.2" rpy="0 0 0"/>
         <parent link="box"/>
         <child link="fisheye_camera"/>
     </joint>
 
     <link name="fisheye_camera">
         <visual>
+            <origin rpy="0 0 ${pi}"/>
             <geometry>
                 <mesh filename="package://ocam-calibration/meshes/camera.dae" scale="0.7 0.7 0.7"/>
             </geometry>
@@ -104,35 +97,8 @@
         </sensor>
     </gazebo>
 
-    <!-- Chessboard -->
-    <joint name="chessboard_mount" type="fixed">
-        <origin xyz="1 0 0"/>
-        <parent link="box"/>
-        <child link="chessboard"/>
-    </joint>
-
-    <link name="chessboard">
-        <inertial>
-            <mass value="0.001"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0"
-                     iyy="1.0" iyz="0.0"
-                     izz="1.0"/>
-        </inertial>
-        <visual>
-            <geometry>
-                <box size="0.1 0.1 0.5"/>
-            </geometry>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="0.1 0.1 0.5"/>
-            </geometry>
-        </collision>
-    </link>
-
     <gazebo>
         <static>true</static>
         <gravity>false</gravity>
     </gazebo>
-
 </robot>
