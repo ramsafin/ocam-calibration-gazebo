@@ -2,9 +2,10 @@
 <robot name="calib_setup" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- camera props -->
     <xacro:property name="hfov" value="${radians(185)}"/>
-    <xacro:property name="width" value="${754}"/>
-    <xacro:property name="height" value="${480}"/>
-    <xacro:property name="clip_near" value="0.1"/>
+    <xacro:property name="fps" value="25"/>
+    <xacro:property name="width" value="754"/>
+    <xacro:property name="height" value="480"/>
+    <xacro:property name="clip_near" value="0.02"/>
     <xacro:property name="clip_far" value="100"/>
 
     <link name="box">
@@ -58,7 +59,7 @@
 
     <gazebo reference="fisheye_camera">
         <sensor name="fisheye" type="wideanglecamera">
-            <update_rate>25</update_rate>
+            <update_rate>${fps}</update_rate>
             <always_on>true</always_on>
 
             <camera>
@@ -82,7 +83,7 @@
                     <!--<cutoff_angle>${pi/2]</cutoff_angle>-->
 
                     <!-- resolution of the cube-map texture, the higher it is - the sharper is your image -->
-                    <env_texture_size>4096</env_texture_size>
+                    <env_texture_size>1024</env_texture_size>
                 </lens>
             </camera>
 

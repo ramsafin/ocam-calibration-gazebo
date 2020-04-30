@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+    <arg name="gui" default="true"/>
     <arg name="world_name" default="$(find ocam-calibration)/worlds/default.world"/>
 
     <!-- spawn args -->
@@ -10,6 +11,7 @@
         <arg name="world_name" value="$(arg world_name)"/>
         <arg name="verbose" value="true"/>
         <arg name="paused" value="true"/>
+        <arg name="gui" value="$(arg gui)"/>
     </include>
 
     <!-- Spawn model -->
