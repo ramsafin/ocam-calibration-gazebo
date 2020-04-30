@@ -18,12 +18,12 @@
     <!-- Spawn model -->
     <group ns="$(arg robot_namespace)">
 
-        <param name="fisheye_description" command="$(find xacro)/xacro
-        '$(find ocam-calibration)/urdf/fisheye.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
+        <param name="calib_setup_description" command="$(find xacro)/xacro
+        '$(find ocam-calibration)/urdf/setup.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
 
-        <node name="spawn_fisheye_box_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+        <node name="spawn_calib_setup_model" pkg="gazebo_ros" type="spawn_model" output="screen"
               args="-x $(arg x) -y $(arg y) -z $(arg z)
-              -unpause -urdf -param $(arg robot_namespace)/fisheye_description -model fisheye_box"/>
+              -unpause -urdf -param $(arg robot_namespace)/calib_setup_description -model calib_setup"/>
     </group>
 
 </launch>
