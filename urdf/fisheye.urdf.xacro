@@ -104,6 +104,32 @@
         </sensor>
     </gazebo>
 
+    <!-- Chessboard -->
+    <joint name="chessboard_mount" type="fixed">
+        <origin xyz="1 0 0"/>
+        <parent link="box"/>
+        <child link="chessboard"/>
+    </joint>
+
+    <link name="chessboard">
+        <inertial>
+            <mass value="0.001"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+                     iyy="1.0" iyz="0.0"
+                     izz="1.0"/>
+        </inertial>
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.5"/>
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.1 0.1 0.5"/>
+            </geometry>
+        </collision>
+    </link>
+
     <gazebo>
         <static>true</static>
         <gravity>false</gravity>
