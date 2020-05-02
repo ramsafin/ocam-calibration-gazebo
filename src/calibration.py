@@ -2,10 +2,12 @@
 
 import sys
 import Queue
-import numpy as np
 
 import cv2
+import numpy as np
+
 import rospy
+import rospkg
 from cv_bridge import CvBridge
 from gazebo_msgs.msg import LinkState
 from gazebo_msgs.srv import SetLinkState
@@ -66,17 +68,21 @@ if __name__ == '__main__':
     rospy.init_node('ocam_calibration', anonymous=True)
 
     try:
-        rospy.wait_for_service('/gazebo/set_link_state', 10)
+        rospy.wait_for_service('/gazebo/set_link_state', 1)
     except rospy.ROSException as e:
         print("Error %s" % e)
+        sys.exit(1)
 
-    rospy.Subscriber('/fisheye/image_raw', Image, image_callback, queue_size=10)
+    rospy.Subscriber('/setup/fisheye/image_raw', Image, image_callback, queue_size=10)
 
     img_counter = 0
     t = np.array([0.3, 0, 0.45])
     rpy = np.array(np.deg2rad([0, 0, 0]))
 
     change_link_state(t, quaternion_from_euler(*rpy))
+
+    rospack = rospkg.RosPack()
+    pkg_path = rospack.get_path('ocam-calibration')
 
     # subscriber is working in another thread
     # here we use blocking stdin for chessboard pose control
@@ -93,7 +99,7 @@ if __name__ == '__main__':
             rpy += r_step_key_map[key]
             change_link_state(t, quaternion_from_euler(*rpy))
         elif key == 'x':
-            filename = '../calibration/Fisheye_gazebo_{}.jpg'.format(img_counter)
+            filename = '{}/calibration/Fisheye_gazebo_{}.jpg'.format(pkg_path, img_counter)
             cv2.imwrite(filename, img_queue.get(), [int(cv2.IMWRITE_JPEG_QUALITY), 100])
             img_counter += 1
             print('Saved file: {}'.format(filename))

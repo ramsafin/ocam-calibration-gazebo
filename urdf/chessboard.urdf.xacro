@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
 <robot name="chessboard">
 
+    <!-- virtual link -->
+    <link name="world"/>
+
+    <joint name="chessboard_mount" type="fixed">
+        <origin xyz="0.3 0 0.45"/>
+        <parent link="world"/>
+        <child link="chessboard"/>
+    </joint>
+
     <link name="chessboard">
         <inertial>
             <mass value="0.001"/>

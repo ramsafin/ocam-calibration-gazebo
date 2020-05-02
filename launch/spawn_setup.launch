@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="gui" default="true"/>
+    <arg name="rviz" default="true"/>
     <arg name="world_name" default="$(find ocam-calibration)/worlds/default.world"/>
 
     <!-- spawn args -->
-    <arg name="robot_namespace" default="/"/>
+    <arg name="setup_ns" default="/setup"/>
+    <arg name="chessboard_ns" default="/board"/>
 
     <!-- Gazebo world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -15,25 +17,44 @@
     </include>
 
     <!-- Spawn model -->
-    <group ns="$(arg robot_namespace)">
+    <group ns="$(arg setup_ns)">
 
-        <param name="robot_description" command="$(find xacro)/xacro
-        '$(find ocam-calibration)/urdf/setup.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
+        <param name="setup_description" command="$(find xacro)/xacro
+        '$(find ocam-calibration)/urdf/setup.urdf.xacro' --inorder robot_namespace:=$(arg setup_ns)"/>
 
-        <node name="spawn_calib_setup_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+        <node name="spawn_setup_model" pkg="gazebo_ros" type="spawn_model" output="screen"
               args="-x 0 -y 0 -z 0.25
-              -unpause -urdf -param $(arg robot_namespace)/robot_description -model calib_setup"/>
+              -unpause -urdf -param $(arg setup_ns)/setup_description -model calib_setup"/>
 
-        <param name="chessboard_description" command="$(find xacro)/xacro
-        '$(find ocam-calibration)/urdf/chessboard.urdf.xacro' --inorder robot_namespace:=$(arg robot_namespace)"/>
+        <node name="setup_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+            <remap from="robot_description" to="setup_description"/>
+        </node>
 
-        <node name="chessboard_model" pkg="gazebo_ros" type="spawn_model" output="screen"
-              args="-x 0.25 -y 0 -z 0.3 -Y 3.1415
-              -unpause -urdf -param $(arg robot_namespace)/chessboard_description -model chessboard"/>
+        <node name="setup_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+            <remap from="robot_description" to="setup_description"/>
+        </node>
     </group>
 
-    <!--    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />-->
-    <!--    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />-->
-    <!--    <node name="rviz_view" pkg="rviz" type="rviz" output="screen"/>-->
+    <group ns="$(arg chessboard_ns)">
+
+        <param name="chessboard_description" command="$(find xacro)/xacro
+                '$(find ocam-calibration)/urdf/chessboard.urdf.xacro' --inorder robot_namespace:=$(arg chessboard_ns)"/>
+
+        <node name="spawn_chessboard_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+              args="-unpause -urdf -param $(arg chessboard_ns)/chessboard_description -model chessboard"/>
+
+        <node name="chessboard_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+            <remap from="robot_description" to="chessboard_description"/>
+        </node>
+
+        <node name="chessboard_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+            <remap from="robot_description" to="chessboard_description"/>
+        </node>
+    </group>
+
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find ocam-calibration)/rviz/model.rviz"/>
+
+    <!-- World -> Box static tf -->
+    <node name="box_static_publisher" pkg="tf" type="static_transform_publisher" args="0 0 0.25 0 0 0 world box 100"/>
 
 </launch>
