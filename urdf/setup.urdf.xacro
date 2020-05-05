@@ -58,12 +58,12 @@
     <link name="fisheye_optical"/>
 
     <gazebo reference="fisheye_camera">
-        <sensor name="fisheye" type="wideanglecamera">
+        <sensor name="fisheye" type="camera">
             <update_rate>${fps}</update_rate>
             <always_on>true</always_on>
 
             <camera>
-                <horizontal_fov>${hfov}</horizontal_fov>
+                <horizontal_fov>${radians(89)}</horizontal_fov>
                 <image>
                     <width>${width}</width>
                     <height>${height}</height>
@@ -72,22 +72,6 @@
                     <near>${clip_near}</near>
                     <far>${clip_far}</far>
                 </clip>
-
-                <!-- See https://en.wikipedia.org/wiki/Fisheye_lens#Mapping_function -->
-                <lens>
-                    <!-- gnomonical, stereographic, equidistant, equisolid_angle, orthographic -->
-                    <type>orthographic</type>
-
-                    <!-- if it is set to `true` your horizontal FOV will remain as defined -->
-                    <!-- otherwise it depends on lens type and custom function, if there is one -->
-                    <scale_to_hfov>true</scale_to_hfov>
-
-                    <!-- clip everything that is outside of this angle -->
-                    <cutoff_angle>${pi/2]</cutoff_angle>
-
-                    <!-- resolution of the cube-map texture, the higher it is - the sharper is your image -->
-                    <env_texture_size>512</env_texture_size>
-                </lens>
             </camera>
 
             <plugin name="fisheye_controller" filename="libgazebo_ros_camera.so">
